@@ -1,2 +1,10 @@
 # 项目排除路径
+.git
+logs
 /target/
+
+### Interllij IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
