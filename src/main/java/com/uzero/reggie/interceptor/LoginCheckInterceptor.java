@@ -30,31 +30,26 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         //网页端登录验证
         Long empId = (Long) req.getSession().getAttribute("employee");
         //判断session不为null或者为登录,短信请求放行
-        if (null != empId || url.contains("/employee/login")) {
-            log.info("网页端用户已登录，用户id：{}", empId);
-            //调用工具类存放用户id
-            BaseContext.setCurrentId(empId);
-            //存放id到ThreadLocal
-            log.info("存放id到ThreadLocal：{}", BaseContext.getCurrentId());
-            Long id = Thread.currentThread().getId();
-            log.info("当前线程id：{}", id);
-            return true;
+        if (!url.contains("/user")) {  //此判断为手机端请求时，拦截
+            if (null != empId || url.contains("/employee/login")) {
+                log.info("网页端用户已登录，用户id：{}", empId);
+                //调用工具类存放用户id
+                BaseContext.setCurrentId(empId);
+                return true;
+            }
         }
 
         //手机端登陆验证
         Long userId = (Long) req.getSession().getAttribute("user");
         //判断session不为null或者为登录,短信请求放行
-        if (null != userId || url.contains("/user/login") || url.contains("/user/sendMsg")) {
-            log.info("手机端用户已登录，用户id：{}", userId);
-            //调用工具类存放用户id
-            BaseContext.setCurrentId(userId);
-            //存放id到ThreadLocal
-            log.info("存放id到ThreadLocal：{}", BaseContext.getCurrentId());
-            Long id = Thread.currentThread().getId();
-            log.info("当前线程id：{}", id);
-            return true;
+        if (!url.contains("/employee")) {  //此判断为网页端请求时，拦截
+            if (null != userId || url.contains("/user/login") || url.contains("/user/sendMsg")) {
+                log.info("手机端用户已登录，用户id：{}", userId);
+                //调用工具类存放用户id
+                BaseContext.setCurrentId(userId);
+                return true;
+            }
         }
-
 
         //拦截
         log.info("账户未登录，拦截");
