@@ -32,9 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //  加载拦截器，填入拦截路径
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/**") //拦截路径
-                .excludePathPatterns("employee/login",
-                                    "employee/logout",
-                                    "/backend/**",
+                .excludePathPatterns("/backend/**",
                                     "/front/**"); //不拦截路径
     }
 
