@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.uzero.reggie.dto.DishDto;
 import com.uzero.reggie.entity.Dish;
 import com.uzero.reggie.entity.DishFlavor;
+import com.uzero.reggie.entity.SetmealDish;
 import com.uzero.reggie.mapper.DishMapper;
 import com.uzero.reggie.service.DishFlavorService;
 import com.uzero.reggie.service.DishService;
+import com.uzero.reggie.service.SetmealDishService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     @Autowired
     private DishFlavorService dishFlavorService;
+
+    @Autowired
+    private SetmealDishService setmealDishService;
 
     /**
      * 新增菜品，同时保存对应的口味数据
@@ -99,5 +104,33 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         }).collect(Collectors.toList());
 
         dishFlavorService.saveBatch(flavors);
+    }
+
+
+    /**
+     * 根据id删除菜品，同时关联口味表和套餐表
+     * @param ids
+     */
+    public boolean deleteWithFlavorAndSetmeal(String[] ids){
+        //查询要删除的菜品中是否归属于某个套餐中
+        LambdaQueryWrapper<SetmealDish> qw = new LambdaQueryWrapper<>();
+        qw.in(SetmealDish::getDishId, ids);
+        long count = setmealDishService.count(qw);
+        //如果有菜品以归属于某个套餐中，则删除失败
+        if (count > 0){
+            return false;
+        }
+
+        //执行删除
+        //删除口味表
+        LambdaQueryWrapper<DishFlavor> qw2 = new LambdaQueryWrapper<>();
+        qw2.in(DishFlavor::getDishId, ids);
+        dishFlavorService.remove(qw2);
+
+        //删除菜品
+        LambdaQueryWrapper<Dish> qw3 = new LambdaQueryWrapper<>();
+        qw3.in(Dish::getId,  ids);
+        this.remove(qw3);
+        return true;
     }
 }
