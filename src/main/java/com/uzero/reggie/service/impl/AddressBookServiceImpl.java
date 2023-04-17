@@ -2,11 +2,8 @@ package com.uzero.reggie.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.uzero.reggie.entity.AddressBook;
-import com.uzero.reggie.entity.User;
 import com.uzero.reggie.mapper.AddressBookMapper;
-import com.uzero.reggie.mapper.UserMapper;
 import com.uzero.reggie.service.AddressBookService;
-import com.uzero.reggie.service.UserService;
 import org.springframework.stereotype.Service;
 
 /**
