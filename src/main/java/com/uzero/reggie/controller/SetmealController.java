@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +53,7 @@ public class SetmealController {
      * @return 返回添加结果
      */
     @PostMapping
+    @CacheEvict(value = "setmealCache", allEntries = true) //删除缓存
     public R<String> save(@RequestBody SetmealDto setmealDto) {
         log.info("添加套餐：{}", setmealDto);
         setmealService.saveWithDish(setmealDto);
@@ -117,6 +120,7 @@ public class SetmealController {
      * @return 删除结果
      */
     @DeleteMapping
+    @CacheEvict(value = "setmealCache", allEntries = true) //删除缓存
     public R<String> deleteByIds(@RequestParam List<Long> ids) {
         log.info("根据id集合删除：{}", ids);
         setmealService.removeWithDish(ids);
@@ -131,6 +135,7 @@ public class SetmealController {
      * @return 修改结果
      */
     @PostMapping("/status/{status}")
+    @CacheEvict(value = "setmealCache", allEntries = true) //删除缓存
     public R<String> updateStatus(@PathVariable int status, String[] ids) {
         log.info("根据id集合修改：{}", (Object) ids);
         //遍历id集合取出id查询数据
@@ -164,6 +169,7 @@ public class SetmealController {
      * @return 返回修改结果信息
      */
     @PutMapping
+    @CacheEvict(value = "setmealCache", allEntries = true) //删除缓存
     public R<String> update(@RequestBody SetmealDto setmealDto) {
         log.info("修改菜品：{}", setmealDto);
         setmealService.updateWithFlavor(setmealDto);
@@ -178,6 +184,7 @@ public class SetmealController {
      * @return 套餐
      */
     @GetMapping("/list")
+    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")
     public R<List<Setmeal>> getList(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> qw = new LambdaQueryWrapper<>();
         qw.eq(null != setmeal.getCategoryId(), Setmeal::getCategoryId, setmeal.getCategoryId());
@@ -186,5 +193,4 @@ public class SetmealController {
         List<Setmeal> list = setmealService.list(qw);
         return R.success(list);
     }
-
 }

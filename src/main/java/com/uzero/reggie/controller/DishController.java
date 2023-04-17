@@ -18,7 +18,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -172,6 +171,7 @@ public class DishController {
         return R.success("修改成功");
     }
 
+
     /**
      * 根据id批量删除
      *
@@ -180,11 +180,11 @@ public class DishController {
      */
     @DeleteMapping
     public R<String> deleteById(String[] ids) {
-        log.info("根据id集合删除：{}", (Object) ids);
-        for (String id : ids) {
-            dishService.removeById(id);
+        log.info("根据id集合删除：{}", ids);
+        if (dishService.deleteWithFlavorAndSetmeal(ids)) {
+            return R.success("删除成功！");
         }
-        return R.success("删除成功");
+        return R.error("删除失败，菜品已有关联套餐！");
     }
 
 
@@ -217,7 +217,7 @@ public class DishController {
         dishDtoList = (List<DishDto>) redisTemplate.opsForValue().get(key);
 
         //如果存在，无需返回直接返回
-        if (null != dishDtoList){
+        if (null != dishDtoList) {
             log.info("使用菜品缓存...");
             return R.success(dishDtoList);
         }
