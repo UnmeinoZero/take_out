@@ -12,6 +12,8 @@ import com.uzero.reggie.service.OrdersService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +45,7 @@ public class OrdersController {
      * @return 返回结果信息
      */
     @PostMapping("/submit")
+    @CacheEvict(value = "orderCache", allEntries = true) //删除缓存
     public R<String> submit(@RequestBody Orders orders) {
         log.info("订单数据：{}", orders);
         ordersService.submit(orders);
@@ -56,6 +59,7 @@ public class OrdersController {
      * @return
      */
     @GetMapping("/userPage")
+    @Cacheable(value = "orderCache") //查询缓存，有用无加
     public R<Page<OrdersDto>> getUserPage(Integer page, Integer pageSize) {
         //获得当前用户id
         Long userId = BaseContext.getCurrentId();
@@ -111,6 +115,7 @@ public class OrdersController {
      * @return 返回分页对象集合
      */
     @GetMapping("/page")
+    @CacheEvict(value = "orderCache", allEntries = true) //删除缓存
     public R<Page<Orders>> getByPage(Integer page, Integer pageSize, Integer number,
                                      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate beginTime,
                                      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endTime) {
@@ -138,6 +143,7 @@ public class OrdersController {
      * @return 返回结果信息
      */
     @PutMapping
+    @CacheEvict(value = "orderCache", allEntries = true) //删除缓存
     public R<String> updateStatus(@RequestBody Orders orders) {
         log.info("修改订单派送状态：{}", orders);
         orders.setStatus(4);
