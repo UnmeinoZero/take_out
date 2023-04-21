@@ -7,6 +7,8 @@ import com.uzero.reggie.entity.ShoppingCart;
 import com.uzero.reggie.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ public class ShoppingCartController {
      * @return 返回购物车对象
      */
     @PostMapping("/add")
+    @CacheEvict(value = "shoppingCache", allEntries = true) //删除缓存
     public R<ShoppingCart> add(@RequestBody ShoppingCart shoppingCart) {
         log.info("添加购物车：{}", shoppingCart);
 
@@ -78,6 +81,7 @@ public class ShoppingCartController {
      * @return 购物车对象
      */
     @PostMapping("sub")
+    @CacheEvict(value = "shoppingCache", allEntries = true) //删除缓存
     public R<ShoppingCart> sub(@RequestBody ShoppingCart shoppingCart) {
         log.info("减购物车：{}", shoppingCart);
 
@@ -129,6 +133,7 @@ public class ShoppingCartController {
      * @return 返回购物车集合
      */
     @GetMapping("/list")
+    @Cacheable(value = "shoppingCache") //查询缓存，有用无加
     public R<List<ShoppingCart>> list() {
         log.info("查看购物车...");
         LambdaQueryWrapper<ShoppingCart> qw = new LambdaQueryWrapper<>();
@@ -145,6 +150,7 @@ public class ShoppingCartController {
      * @return 返回结果信息
      */
     @DeleteMapping("/clean")
+    @CacheEvict(value = "shoppingCache", allEntries = true) //删除缓存
     public R<String> clean() {
         log.info("清空购物车...");
         //根据用户id删除对应的购物车信息

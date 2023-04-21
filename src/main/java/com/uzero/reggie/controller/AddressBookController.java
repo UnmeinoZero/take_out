@@ -8,6 +8,8 @@ import com.uzero.reggie.entity.AddressBook;
 import com.uzero.reggie.service.AddressBookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class AddressBookController {
      * @return 返回地址簿对象
      */
     @PostMapping
+    @CacheEvict(value = "addressCache", allEntries = true) //删除缓存
     public R<AddressBook> save(@RequestBody AddressBook addressBook){
         addressBook.setUserId(BaseContext.getCurrentId());
         log.info("地址簿：{}", addressBook);
@@ -44,6 +47,7 @@ public class AddressBookController {
      * @return  返回地址簿对象
      */
     @PutMapping("/default")
+    @CacheEvict(value = "addressCache", allEntries = true) //删除缓存
     public R<AddressBook> setDefault(@RequestBody AddressBook addressBook){
         log.info("地址簿：{}", addressBook);
         LambdaUpdateWrapper<AddressBook> qw = new LambdaUpdateWrapper<>();
@@ -65,6 +69,7 @@ public class AddressBookController {
      * @return addressBook
      */
     @GetMapping("/{id}")
+    @CacheEvict(value = "addressCache", allEntries = true) //删除缓存
     public R<AddressBook> getById(@PathVariable Long id){
         log.info("根据id查询地址：{}", id);
         AddressBook addressBook = addressBookService.getById(id);
@@ -80,6 +85,7 @@ public class AddressBookController {
      * @return  地址簿
      */
     @GetMapping("/default")
+    @CacheEvict(value = "addressCache", allEntries = true) //删除缓存
     public R<AddressBook> getDefault(){
         log.info("查询默认地址");
         LambdaQueryWrapper<AddressBook> qw = new LambdaQueryWrapper<>();
@@ -98,6 +104,7 @@ public class AddressBookController {
      * @return 地址簿对象
      */
     @GetMapping("/list")
+    @Cacheable(value = "addressCache", key = "#addressBook.id + '_' + #addressBook.isDefault") //查询缓存，有用无加
     public R<List<AddressBook>> gatList(AddressBook addressBook){
         addressBook.setUserId(BaseContext.getCurrentId());
         log.info("地址簿：{}", addressBook);
