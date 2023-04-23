@@ -190,21 +190,9 @@ public class DishController {
 
     /**
      * 根据条件查询菜品
-     *
+     * @param dish  菜品
      * @return 返回菜品集合
      */
-//    @GetMapping("/list")
-//    public R<List<Dish>> getByCategory(Dish dish) {
-//        log.info("根据条件查询菜品：{}", dish);
-//        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
-//        //构造条件
-//        qw.eq(Dish::getStatus, 1);
-//        qw.eq(null != dish.getCategoryId(), Dish::getCategoryId, dish.getCategoryId());
-//        //添加排序(根据设置的排序或者更新时间排序)
-//        qw.orderByDesc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
-//        List<Dish> list = dishService.list(qw);
-//        return R.success(list);
-//    }
     @GetMapping("/list")
     public R<List<DishDto>> getByCategory(Dish dish) {
         List<DishDto> dishDtoList = null;
@@ -258,8 +246,8 @@ public class DishController {
             return dishDto;
         }).collect(Collectors.toList());
 
-        //将菜品数据缓存到redis，时效60分钟
-        redisTemplate.opsForValue().set(key, dishDtoList, 60, TimeUnit.MINUTES);
+        //将菜品数据缓存到redis，时效30分钟
+        redisTemplate.opsForValue().set(key, dishDtoList, 30, TimeUnit.MINUTES);
 
         return R.success(dishDtoList);
     }

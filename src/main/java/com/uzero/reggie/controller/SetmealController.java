@@ -37,10 +37,6 @@ public class SetmealController {
     @Autowired
     private SetmealService setmealService;
 
-    //套餐菜品
-    @Autowired
-    private SetmealDishService setmealDishService;
-
     //分类
     @Autowired
     private CategoryService categoryService;
@@ -70,6 +66,7 @@ public class SetmealController {
      * @return 返回分页数据
      */
     @GetMapping("/page")
+    @CacheEvict(value = "setmealCache", allEntries = true) //删除缓存
     public R<Page<SetmealDto>> getByIdPage(@RequestParam(defaultValue = "1") Integer page,
                                            @RequestParam(defaultValue = "10") Integer pageSize,
                                            String name) {
