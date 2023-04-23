@@ -74,4 +74,4 @@ mybatis-plus:
 
 #  配置文件上传保存位置
 reggie:
-  path: /usr/local/server_stored
+  path: /usr/local/server_stored/
