@@ -44,7 +44,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/**") //拦截路径
                 .excludePathPatterns("/backend/**",
-                                    "/front/**"); //不拦截路径
+                                    "/front/**",
+                                    "/doc.html",
+                                    "/web.jars/**",
+                                    "/swagger-resources",
+                                    "/v2/api-docs");  //不拦截路径
     }
 
     /**
