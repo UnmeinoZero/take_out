@@ -1,4 +1,5 @@
 ### 项目排除路径 ###
+.idea
 .git
 logs
 rebel.xml
@@ -18,7 +19,6 @@ offline_user.md
 .springBeans
 
 ### Interllij IDEA ###
-.idea
 *.iws
 *.iml
 *.ipr
