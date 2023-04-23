@@ -1,6 +1,5 @@
 package com.uzero.reggie.config;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.uzero.reggie.common.JacksonObjectMapper;
 import com.uzero.reggie.interceptor.LoginCheckInterceptor;
@@ -11,9 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
